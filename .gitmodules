@@ -1,0 +1,6 @@
+[submodule "third_party/awesome-cheatsheets"]
+	path = third_party/awesome-cheatsheets
+	url = https://github.com/jjkkwym/awesome-cheatsheets.git
+[submodule "third_party/EasyLogger"]
+	path = third_party/EasyLogger
+	url = https://github.com/jjkkwym/EasyLogger.git
