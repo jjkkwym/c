@@ -25,7 +25,7 @@ $(info C_SRC: $(C_SRC))
 $(info OBJS: $(OBJS))
 $(info DEPS: $(DEPS))
 
-all: libmisc.a install_headers
+all: libmisc.a install
 
 libmisc.a : $(OBJS)
 	ar -rcs $@ $^
@@ -36,9 +36,12 @@ libmisc.a : $(OBJS)
 clean:
 	rm $(OBJS) libmisc.a
 
-install_headers : FORCE
-	mkdir -p ../inc
+install : FORCE
+	@mkdir -p ../inc
+	@mkdir -p ../lib 
 	cp $(HEADERS) ../inc
+	cp libmisc.a ../lib
+
 FORCE:
 #.c.o:
 #$(TARGET):$(OBJS)

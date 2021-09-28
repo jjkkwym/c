@@ -281,6 +281,7 @@ int main()
 {
     //uart_init();
     char json_buf[1024];
+    //ASSERT(NULL);
     json_creat(json_buf);
     json_parse(json_buf);
     cJSON * root =  cJSON_CreateObject();
