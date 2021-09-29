@@ -279,15 +279,16 @@ void json_parse(char *buf)
 
 int main()
 {
-    //uart_init();
-    char json_buf[1024];
-    //ASSERT(NULL);
-    json_creat(json_buf);
-    json_parse(json_buf);
-    cJSON * root =  cJSON_CreateObject();
-    cJSON_AddStringToObject(root, "PartNumber", "0000000001");
-    cJSON_AddArrayToObject(root,"version_reports");
-    printf("%s\n",cJSON_Print(root));
+    // //uart_init();
+    // char json_buf[1024];
+    // //ASSERT(NULL);
+    // json_creat(json_buf);
+    // json_parse(json_buf);
+    // cJSON * root =  cJSON_CreateObject();
+    // cJSON_AddStringToObject(root, "PartNumber", "0000000001");
+    // cJSON_AddArrayToObject(root,"version_reports");
+    // printf("%s\n",cJSON_Print(root));
+    log_init("demo.log");
 
     uint8_t buf[128];
     for(int i = 0;i < 128;i++)
@@ -303,6 +304,13 @@ int main()
     for (int i = 0; i < 512; i++)
     {
         log_buf[i] = i;
+    }
+    while(1)
+    {
+        LOG_INFO("program pid: %d", getpid());
+        LOG_INFO("program uid: %d", getuid());
+        LOG_INFO("program gid: %d", getgid());
+        sleep(1);
     }
     //array_print("log_buf", log_buf, sizeof(log_buf) - 12);    
     /* int null_fd = open("/dev/null", O_WRONLY | O_TRUNC);

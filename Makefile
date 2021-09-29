@@ -1,21 +1,21 @@
 BUILD_DIR := build
 TARGET := $(BUILD_DIR)/demo
-LIB_DIR := -L lib
+INC_DIR := -Iinc
+LIB_DIR := -Llib
 LIB := -lmisc -lcrypto -lssl -lpthread
-INC_DIR := inc
-INCLUDE := -I$(INC_DIR)
 CFLAG := -g -Wall
+LDFLAG := $(INC_DIR) $(LIB_DIR) $(LIB)
 
 .PHONY: all misc clean run
 
-all: misc $(TARGET)
+all: $(TARGET)
 
-$(TARGET): main.c
+$(TARGET): main.c misc
 	mkdir -p $(BUILD_DIR)
-	gcc -o $(TARGET) main.c $(CFLAG) $(INCLUDE) $(LIB_DIR) $(LIB)
+	gcc -o $(TARGET) main.c $(CFLAG) $(LDFLAG)
 
 misc:
-	make -C misc
+	make -C lib/misc
 
 clean:
 	rm $(TARGET)

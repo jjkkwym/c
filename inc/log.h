@@ -3,8 +3,6 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define MAX_LOG_FILE_SIZE (10*1024*1024)
-
 typedef enum
 {
     LOG_LEVEL_ERROR,
@@ -67,6 +65,14 @@ typedef enum
 
 #define LOG_HEXDUMP(str,data,length) array_print("[HEXDUMP] "str,data,length)
 #define LOG_HEX(x)          printf(#x ":0x%02x\n",x)
+
+typedef struct
+{
+    char *name;              /* file name */
+    size_t max_size;         /* file max size */
+    int max_rotate;          /* max rotate file count */
+}log_file_cfg_t;
+
 
 char *log_timestamp(void);
 

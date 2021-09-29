@@ -5,8 +5,13 @@
 #include <time.h>
 #include <sys/time.h>
 #include <sys/stat.h>
+#include "string.h"
 
 static const char *g_log_file_path = NULL;
+
+#define MAX_LOG_FILE_SIZE (4*1024)
+#define MAX__ROTATE 2
+
 
 off_t get_file_size(const char *filename) 
 { 
@@ -24,8 +29,9 @@ void log_init(const char *log_file_path)
         printf("log_file_path is null\n");
         return;
     }
+ 
     g_log_file_path = log_file_path;
-    reset_log_file(log_file_path);
+    //reset_log_file(log_file_path);
     printf("LOG_FILE_PATH:%s\n",g_log_file_path);
 }
 
@@ -64,6 +70,40 @@ char *log_timestamp(void)
     return timestamp;        
 }
 
+int rotate_log_file(void)
+{
+#define SUFFIX_LEN                     10
+    /* mv xxx.log.n-1 => xxx.log.n, and xxx.log => xxx.log.0 */
+    int n, err = 0;
+    char oldpath[256], newpath[256];
+    size_t base = strlen(g_log_file_path);
+    int result = 0;
+    FILE *tmp_fp;
+    
+    memcpy(oldpath, g_log_file_path, base);
+    memcpy(newpath, g_log_file_path, base);
+
+    for (n = MAX__ROTATE - 1; n >= 0; --n) {
+        snprintf(oldpath + base, SUFFIX_LEN, n ? ".%d" : "", n - 1);
+        snprintf(newpath + base, SUFFIX_LEN, ".%d", n);
+        /* remove the old file */
+        if ((tmp_fp = fopen(newpath , "r")) != NULL) {
+            fclose(tmp_fp);
+            remove(newpath);
+        }
+        /* change the new log file to old file name */
+        if ((tmp_fp = fopen(oldpath , "r")) != NULL) {
+            fclose(tmp_fp);
+            err = rename(oldpath, newpath);
+        }
+
+        if (err < 0) {
+            return -1;
+        }
+    }
+    return 0;
+}
+
 void write_log(const char *format,...)
 {       
     char buf[512];
@@ -80,7 +120,7 @@ void write_log(const char *format,...)
 
     if(get_file_size(g_log_file_path) > MAX_LOG_FILE_SIZE)
     {
-        reset_log_file(g_log_file_path);
+        rotate_log_file();
     }
 
     FILE *log_fp = fopen(g_log_file_path,"a+");
@@ -89,7 +129,7 @@ void write_log(const char *format,...)
         printf("open log file error\n");
     }
     //write log file
-    fprintf(log_fp,"%s\n",buf);
+    fprintf(log_fp,"%s",buf);
     fclose(log_fp);
 }
 

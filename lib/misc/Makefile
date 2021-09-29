@@ -1,4 +1,6 @@
-BUILD_DIR := build
+ROOT_DIR  := ../..
+INSTALL_LIB_DIR := ..
+INSTALL_INC_DIR := $(ROOT_DIR)/inc
 
 C_SRC += $(wildcard base64/*.c)
 C_SRC += $(wildcard cJSON/*.c)
@@ -13,7 +15,6 @@ HEADERS += $(wildcard list/*.h)
 HEADERS += $(wildcard log/*.h)
 
 OBJS := $(patsubst %.c,%.o,$(C_SRC))
-#OBJS := $(addprefix $(BUILD_DIR)/,$(OBJS))
 DEPS := $(patsubst %.c,%.d,$(C_SRC))
 
 INCLUDES:= -I.
@@ -37,10 +38,10 @@ clean:
 	rm $(OBJS) libmisc.a
 
 install : FORCE
-	@mkdir -p ../inc
-	@mkdir -p ../lib 
-	cp $(HEADERS) ../inc
-	cp libmisc.a ../lib
+	@mkdir -p $(INSTALL_INC_DIR)
+	@mkdir -p $(INSTALL_LIB_DIR) 
+	cp $(HEADERS) $(INSTALL_INC_DIR)
+	cp libmisc.a  $(INSTALL_LIB_DIR)
 
 FORCE:
 #.c.o:
