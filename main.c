@@ -225,60 +225,20 @@ bool uart_init()
     return rc;
 }
 
-void json_creat(char *buf)
-{
-    cJSON * root =  cJSON_CreateObject();
-
-    cJSON_AddStringToObject(root, "PartNumber", "0000000001");
-    cJSON_AddStringToObject(root, "Unique serial number", "0202107161");
-    cJSON_AddStringToObject(root, "Model", "0000000001");
-    cJSON_AddStringToObject(root, "Hardware Initial Version", "0000000101");
-    cJSON_AddStringToObject(root, "Data Pack Initial Version", "0000000101");
-    cJSON_AddStringToObject(root, "Maker", "0000000001");
-    cJSON_AddStringToObject(root, "FCC", "0000000001");
-    cJSON_AddStringToObject(root, "Manufacture Date", "0000000000");
-    cJSON_AddStringToObject(root, "Project ID", "0202107161");
-    cJSON_AddStringToObject(root, "MB Number", "0000000001");
-    cJSON_AddStringToObject(root, "FW Version", "1.0.21.0716");
-    cJSON_AddStringToObject(root, "Device Type", "1");
-    cJSON_AddStringToObject(root, "Provision Status", "0");
-
-    sprintf(buf,"%s", cJSON_Print(root));
-    printf("%s",buf);
-    cJSON_Delete(root);
-}
-
-void json_parse(char *buf)
-{
-    cJSON * root = NULL;
-    cJSON * data = NULL;
-    root = cJSON_Parse(buf);
-    if(!root)
-    {
-        printf("Error before: [%s]\n",cJSON_GetErrorPtr());
-    }
-    else
-    {
-        printf("%s\n\n", cJSON_Print(root));
-        //printf("%s\n\n", cJSON_PrintUnformatted(root));
-
-        data = cJSON_GetObjectItem(root, "PartNumber");
-        printf("type:%x,%s:",data->type ,data->string);
-        printf("%s\n", data->valuestring);
-        cJSON_ReplaceItemInObject(root,"PartNumber",cJSON_CreateString("123456"));
-        data = cJSON_GetObjectItem(root, "PartNumber");
-        printf("%s:", data->string);
-        printf("%s\n", data->valuestring);
-        data = cJSON_GetObjectItem(root, "Unique serial number");
-        printf("%s:", data->string);
-        printf("%s\n", data->valuestring); 
-    }
-    printf("%s", cJSON_Print(root));
-}
-
-
 int main()
 {
+    char buf[] = "hello world!";
+    char bu2[256];
+    FILE *fp = fopen(buf,"rb");
+    if(fp == NULL)
+    {
+        printf("open err\n");
+        return;
+    }
+    fread(bu2,1,sizeof(bu2),fp);
+    fclose(fp);
+    printf("%s\n",bu2);
+
     // //uart_init();
     // char json_buf[1024];
     // //ASSERT(NULL);
@@ -288,30 +248,30 @@ int main()
     // cJSON_AddStringToObject(root, "PartNumber", "0000000001");
     // cJSON_AddArrayToObject(root,"version_reports");
     // printf("%s\n",cJSON_Print(root));
-    log_init("demo.log");
+    // log_init("demo.log");
 
-    uint8_t buf[128];
-    for(int i = 0;i < 128;i++)
-        memset(&buf[i],i,1);
-    LOG_HEXDUMP("buf",buf,124);
-    char *base64EncodeOutput, *text = "6033e422c2a6acc6a175fb1eedde0f6c8eaf66b3737f6888cfbc379e20ea97e0";
-    //base64_encode(text,buf,strlen(text));
+    // uint8_t buf[128];
+    // for(int i = 0;i < 128;i++)
+    //     memset(&buf[i],i,1);
+    // LOG_HEXDUMP("buf",buf,124);
+    // char *base64EncodeOutput, *text = "6033e422c2a6acc6a175fb1eedde0f6c8eaf66b3737f6888cfbc379e20ea97e0";
+    // //base64_encode(text,buf,strlen(text));
     //printf("Output (base64): %s\n", buf);
-    LOG_INFO("program pid: %d", getpid());
-    LOG_INFO("program uid: %d", getuid());
-    LOG_INFO("program gid: %d", getgid());
-    char log_buf[512];
-    for (int i = 0; i < 512; i++)
-    {
-        log_buf[i] = i;
-    }
-    while(1)
-    {
-        LOG_INFO("program pid: %d", getpid());
-        LOG_INFO("program uid: %d", getuid());
-        LOG_INFO("program gid: %d", getgid());
-        sleep(1);
-    }
+    // LOG_INFO("program pid: %d", getpid());
+    // LOG_INFO("program uid: %d", getuid());
+    // LOG_INFO("program gid: %d", getgid());
+    // char log_buf[512];
+    // for (int i = 0; i < 512; i++)
+    // {
+    //     log_buf[i] = i;
+    // }
+    // while(1)
+    // {
+    //     LOG_INFO("program pid: %d", getpid());
+    //     LOG_INFO("program uid: %d", getuid());
+    //     LOG_INFO("program gid: %d", getgid());
+    //     sleep(1);
+    // }
     //array_print("log_buf", log_buf, sizeof(log_buf) - 12);    
     /* int null_fd = open("/dev/null", O_WRONLY | O_TRUNC);
     dup2(null_fd, STDOUT_FILENO);

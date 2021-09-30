@@ -4,6 +4,5 @@
 
 ## 拷贝
 
-复制mbedtls目录下的include/和library/目录到optee ta程序路径
-
-修改
+复制mbedtls-3.0.0 include/和library/目录到
+将mbedtls目录和
